@@ -32,14 +32,16 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.txtLog = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox
             // 
-            this.pictureBox.Location = new System.Drawing.Point(18, 10);
+            this.pictureBox.Location = new System.Drawing.Point(10, 5);
+            this.pictureBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(1100, 866);
+            this.pictureBox.Size = new System.Drawing.Size(592, 406);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.Click += new System.EventHandler(this.pictureBox_Click);
@@ -54,23 +56,37 @@
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(1124, 10);
+            this.txtLog.Location = new System.Drawing.Point(605, 5);
+            this.txtLog.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(350, 863);
+            this.txtLog.Size = new System.Drawing.Size(190, 407);
             this.txtLog.TabIndex = 1;
             this.txtLog.Text = "";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(538, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 15);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Очки: 0";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1479, 883);
+            this.ClientSize = new System.Drawing.Size(796, 414);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.pictureBox);
+            this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.Name = "Form1";
             this.Text = "EventProcess";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -79,5 +95,6 @@
         private PictureBox pictureBox;
         private System.Windows.Forms.Timer timer1;
         private RichTextBox txtLog;
+        private Label label1;
     }
 }

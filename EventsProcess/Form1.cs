@@ -7,10 +7,16 @@ namespace EventsProcess
         Player player;
         List<BaseObject> objects = new();
         Marker marker;
+        GreenObject greenObject;
+        GreenObject secondGreenObject;
+        int countOfOverlaps = 0;
         public Form1()
         {
             InitializeComponent();
             player = new Player(pictureBox.Width / 2, pictureBox.Height / 2, 0);
+
+            SpawnGreenObject(greenObject);
+            SpawnGreenObject(secondGreenObject);
 
             player.OnOverlap += (p, obj) =>
             {
@@ -22,7 +28,15 @@ namespace EventsProcess
                 objects.Remove(m);
                 marker = null;
             };
-            objects.Add(player);   
+            objects.Add(player);
+
+            player.OnGreenObjectOverlap += (m) =>
+            {
+                objects.Remove(m);
+                greenObject = null;
+                UpdateCountOfOverlaps();
+                SpawnGreenObject(m);
+            };
         }
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
@@ -48,6 +62,29 @@ namespace EventsProcess
             }
         }
 
+        private void UpdateCountOfOverlaps()
+        {
+            countOfOverlaps++;
+            label1.Text = $"Очки: {countOfOverlaps}";
+        }
+
+        private void DeleteGreenObject(GreenObject greenObject)
+        {
+
+        }
+
+        private void SpawnGreenObject(GreenObject greenObject)
+        {
+            greenObject = new GreenObject(0, 0, 0);
+            objects.Add(greenObject);
+
+            Random random = new Random();
+            int randomX = random.Next(0, pictureBox.Width);
+            int randomY = random.Next(0, pictureBox.Height);
+
+            greenObject.X = randomX;
+            greenObject.Y = randomY;
+        }
         private void UpdatePlayer()
         {
             if (marker != null)
@@ -69,6 +106,8 @@ namespace EventsProcess
 
             player.X += player.vX;
             player.Y += player.vY;
+
+            greenObject.GetLength(player.X, player.Y);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -89,6 +128,11 @@ namespace EventsProcess
         }
 
         private void pictureBox_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

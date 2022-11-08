@@ -10,6 +10,7 @@ namespace EventsProcess.Objects
     class Player : BaseObject
     {
         public Action<Marker> OnMarkerOverlap;
+        public Action<GreenObject> OnGreenObjectOverlap;
         public float vX, vY;
         public Player(float x, float y, float angle) : base(x, y, angle)
         {
@@ -35,6 +36,9 @@ namespace EventsProcess.Objects
             if (obj is Marker)
             {
                 OnMarkerOverlap(obj as Marker);
+            } else if (obj is GreenObject)
+            {
+                OnGreenObjectOverlap(obj as GreenObject);
             }
         }
     }
