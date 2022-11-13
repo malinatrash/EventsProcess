@@ -9,8 +9,8 @@ namespace EventsProcess.Objects
 {
     class GreenObject : BaseObject
     {
-
-        int length = 5;
+        public Action<GreenObject> TimeOut;
+        public int time = 100;
         public GreenObject(float x, float y, float angle) : base(x, y, angle)
         {
         }
@@ -19,23 +19,32 @@ namespace EventsProcess.Objects
             g.FillEllipse(new SolidBrush(Color.DarkSeaGreen), -10, -10, 20, 20);
 
             g.DrawString(
-            $"{length}",
-             new Font("Verdana", 8), 
-             new SolidBrush(Color.Green), 
-             10, 10 
+            $"{UpdateTime()}",
+             new Font("Verdana", 10),
+             new SolidBrush(Color.Green),
+             10, 10
              );
         }
 
         public override GraphicsPath GetGraphicsPath()
         {
             var path = base.GetGraphicsPath();
-            path.AddEllipse( -10, -10, 20, 20);
+            path.AddEllipse(-10, -10, 20, 20);
             return path;
         }
 
-        public void getLength(int playerX, int playerY)
+        public int UpdateTime()
         {
+            time -= 1;
+            return time;
+        }
 
+        public override void Overlap(BaseObject obj)
+        {
+            if (obj is GreenObject)
+            {
+                TimeOut(obj as GreenObject);
+            }
         }
     }
 }

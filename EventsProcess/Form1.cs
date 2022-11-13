@@ -106,10 +106,9 @@ namespace EventsProcess
 
             player.X += player.vX;
             player.Y += player.vY;
-
-            greenObject.GetLength(player.X, player.Y);
+            
         }
-
+        
         private void timer1_Tick(object sender, EventArgs e)
         {
             pictureBox.Invalidate();
