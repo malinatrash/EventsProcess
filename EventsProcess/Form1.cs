@@ -16,8 +16,19 @@ namespace EventsProcess
         {
             InitializeComponent();
 
-            player = new Player(pictureBox.Width / 2, pictureBox.Height / 2, 0);
+            CreatePlayer();
 
+            OverlapsProcess();
+
+            CreateRedObject();
+
+            TimerProcess();
+        }
+
+
+        //MARK: Events processing
+        private void OverlapsProcess()
+        {
             player.OnOverlap += (p, obj) =>
             {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss}] Игрок пересекся с {obj}\n\n" + txtLog.Text;
@@ -37,25 +48,13 @@ namespace EventsProcess
 
             player.OnRedObjectOverlap += (m) =>
             {
-                ResetRedObject(m); 
+                ResetRedObject(m);
                 UpdateCountOfOverlaps(false);
             };
+        }
 
-            redObject = new RedObject(0, 0, 0);
-            objects.Add(redObject);
-
-            Random random = new Random();
-            int randomX = random.Next(0, pictureBox.Width);
-            int randomY = random.Next(0, pictureBox.Height);
-
-            redObject.X = randomX;
-            redObject.Y = randomY;
-
-            objects.Add(player);
-            objects.Add(CreateGreenObject());
-            objects.Add(CreateGreenObject());
-
-            //поиск кругов в списке объектов
+        private void TimerProcess()
+        {
             foreach (var obj in objects.ToList())
             {
                 if (obj is GreenObject greenObject)
@@ -68,6 +67,8 @@ namespace EventsProcess
             }
         }
 
+
+        //MARK: PictureBox method
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
@@ -97,7 +98,20 @@ namespace EventsProcess
                 obj.Render(g);
             }
         }
+        private void pictureBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (marker == null)
+            {
+                marker = new Marker(0, 0, 0);
+                objects.Add(marker);
+            }
 
+            marker.X = e.X;
+            marker.Y = e.Y;
+        }
+
+
+        //MARK: Update label method
         private void UpdateCountOfOverlaps(bool value)
         {
             if (value == true)
@@ -110,6 +124,8 @@ namespace EventsProcess
             label1.Text = $"Очки: {countOfOverlaps}";
         }
 
+
+        //MARK: GreenObject methods
         private void ResetGreenObject(GreenObject greenObject)
         {
             Random random = new Random();
@@ -120,19 +136,6 @@ namespace EventsProcess
             greenObject.Y = randomY;
             greenObject.time = 200;
         }
-
-        private void ResetRedObject(RedObject redObject)
-        {
-            Random random = new Random();
-            int randomX = random.Next(0, pictureBox.Width);
-            int randomY = random.Next(0, pictureBox.Height);
-
-            redObject.ResetSize();
-
-            redObject.X = randomX;
-            redObject.Y = randomY;
-        }
-
         private GreenObject CreateGreenObject()
         {
             GreenObject greenObject = new GreenObject(0, 0, 0);
@@ -147,6 +150,43 @@ namespace EventsProcess
             return greenObject;
         }
 
+
+        //MARK: RedObject methods
+        private void ResetRedObject(RedObject redObject)
+        {
+            Random random = new Random();
+            int randomX = random.Next(0, pictureBox.Width);
+            int randomY = random.Next(0, pictureBox.Height);
+
+            redObject.ResetSize();
+
+            redObject.X = randomX;
+            redObject.Y = randomY;
+        }
+
+        private void CreateRedObject()
+        {
+            redObject = new RedObject(0, 0, 0);
+            objects.Add(redObject);
+
+            Random random = new Random();
+            int randomX = random.Next(0, pictureBox.Width);
+            int randomY = random.Next(0, pictureBox.Height);
+
+            redObject.X = randomX;
+            redObject.Y = randomY;
+
+            objects.Add(player);
+            objects.Add(CreateGreenObject());
+            objects.Add(CreateGreenObject());
+        }
+
+
+        //MARK: Player methods
+        private void CreatePlayer()
+        {
+            player = new Player(pictureBox.Width / 2, pictureBox.Height / 2, 0);
+        }
         private void UpdatePlayer()
         {
             if (marker != null)
@@ -170,23 +210,15 @@ namespace EventsProcess
             player.Y += player.vY;
         }
         
+
+        //MARK: timer update method
         private void timer1_Tick(object sender, EventArgs e)
         {
             pictureBox.Invalidate();
         }
 
-        private void pictureBox_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (marker == null)
-            {
-                marker = new Marker(0, 0, 0);
-                objects.Add(marker);
-            }
 
-            marker.X = e.X;
-            marker.Y = e.Y;
-        }
-
+        //MARK: useless dude
         private void pictureBox_Click(object sender, EventArgs e)
         {
 

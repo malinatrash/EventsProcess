@@ -10,7 +10,6 @@ namespace EventsProcess.Objects
 {
     internal class RedObject : BaseObject
     {
-        public Action<GreenObject>? TimeOut;
         public int x1 = -10;
         public int x2 = 20;
         public int y1 = -10;
