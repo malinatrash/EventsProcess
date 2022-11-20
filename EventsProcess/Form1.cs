@@ -1,5 +1,6 @@
 using EventsProcess.Objects;
 using System;
+using System.Collections.Specialized;
 
 namespace EventsProcess
 {
@@ -8,6 +9,7 @@ namespace EventsProcess
         Player player;
         List<BaseObject> objects = new();
         Marker marker;
+        RedObject redObject;
         int countOfOverlaps = 0;
 
         public Form1()
@@ -30,8 +32,24 @@ namespace EventsProcess
             player.OnGreenObjectOverlap += (m) =>
             {
                 ResetGreenObject(m);
-                UpdateCountOfOverlaps();
+                UpdateCountOfOverlaps(true);
             };
+
+            player.OnRedObjectOverlap += (m) =>
+            {
+                ResetRedObject(m); 
+                UpdateCountOfOverlaps(false);
+            };
+
+            redObject = new RedObject(0, 0, 0);
+            objects.Add(redObject);
+
+            Random random = new Random();
+            int randomX = random.Next(0, pictureBox.Width);
+            int randomY = random.Next(0, pictureBox.Height);
+
+            redObject.X = randomX;
+            redObject.Y = randomY;
 
             objects.Add(player);
             objects.Add(CreateGreenObject());
@@ -56,6 +74,7 @@ namespace EventsProcess
             g.Clear(Color.White);
 
             UpdatePlayer();
+            redObject.UpdateSize();
 
             foreach (var obj in objects.ToList())
             {
@@ -79,9 +98,15 @@ namespace EventsProcess
             }
         }
 
-        private void UpdateCountOfOverlaps()
+        private void UpdateCountOfOverlaps(bool value)
         {
-            countOfOverlaps++;
+            if (value == true)
+            {
+                countOfOverlaps++;
+            } else
+            {
+                countOfOverlaps--;
+            }
             label1.Text = $"Очки: {countOfOverlaps}";
         }
 
@@ -94,6 +119,18 @@ namespace EventsProcess
             greenObject.X = randomX;
             greenObject.Y = randomY;
             greenObject.time = 200;
+        }
+
+        private void ResetRedObject(RedObject redObject)
+        {
+            Random random = new Random();
+            int randomX = random.Next(0, pictureBox.Width);
+            int randomY = random.Next(0, pictureBox.Height);
+
+            redObject.ResetSize();
+
+            redObject.X = randomX;
+            redObject.Y = randomY;
         }
 
         private GreenObject CreateGreenObject()
@@ -109,6 +146,7 @@ namespace EventsProcess
             greenObject.Y = randomY;
             return greenObject;
         }
+
         private void UpdatePlayer()
         {
             if (marker != null)
