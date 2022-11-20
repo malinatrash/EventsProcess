@@ -1,4 +1,5 @@
 using EventsProcess.Objects;
+using System;
 
 namespace EventsProcess
 {
@@ -7,20 +8,17 @@ namespace EventsProcess
         Player player;
         List<BaseObject> objects = new();
         Marker marker;
-        GreenObject greenObject;
-        GreenObject secondGreenObject;
         int countOfOverlaps = 0;
+
         public Form1()
         {
             InitializeComponent();
-            player = new Player(pictureBox.Width / 2, pictureBox.Height / 2, 0);
 
-            SpawnGreenObject(greenObject);
-            SpawnGreenObject(secondGreenObject);
+            player = new Player(pictureBox.Width / 2, pictureBox.Height / 2, 0);
 
             player.OnOverlap += (p, obj) =>
             {
-                txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
+                txtLog.Text = $"[{DateTime.Now:HH:mm:ss}] Игрок пересекся с {obj}\n\n" + txtLog.Text;
             };
 
             player.OnMarkerOverlap += (m) =>
@@ -28,15 +26,28 @@ namespace EventsProcess
                 objects.Remove(m);
                 marker = null;
             };
-            objects.Add(player);
 
             player.OnGreenObjectOverlap += (m) =>
             {
-                objects.Remove(m);
-                greenObject = null;
+                ResetGreenObject(m);
                 UpdateCountOfOverlaps();
-                SpawnGreenObject(m);
             };
+
+            objects.Add(player);
+            objects.Add(CreateGreenObject());
+            objects.Add(CreateGreenObject());
+
+            //поиск кругов в списке объектов
+            foreach (var obj in objects.ToList())
+            {
+                if (obj is GreenObject greenObject)
+                {
+                    greenObject.TimeOut += (c) =>
+                    {
+                        ResetGreenObject(c);
+                    };
+                }
+            }
         }
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
@@ -53,6 +64,12 @@ namespace EventsProcess
                     player.Overlap(obj);
                     obj.Overlap(player);
                 }
+
+                if (obj is GreenObject greenObject)
+                {
+                    greenObject.time -= 1;
+                    greenObject.TimeOver();
+                }
             }
 
             foreach (var obj in objects)
@@ -68,14 +85,20 @@ namespace EventsProcess
             label1.Text = $"Очки: {countOfOverlaps}";
         }
 
-        private void DeleteGreenObject(GreenObject greenObject)
+        private void ResetGreenObject(GreenObject greenObject)
         {
+            Random random = new Random();
+            int randomX = random.Next(0, pictureBox.Width);
+            int randomY = random.Next(0, pictureBox.Height);
 
+            greenObject.X = randomX;
+            greenObject.Y = randomY;
+            greenObject.time = 200;
         }
 
-        private void SpawnGreenObject(GreenObject greenObject)
+        private GreenObject CreateGreenObject()
         {
-            greenObject = new GreenObject(0, 0, 0);
+            GreenObject greenObject = new GreenObject(0, 0, 0);
             objects.Add(greenObject);
 
             Random random = new Random();
@@ -84,6 +107,7 @@ namespace EventsProcess
 
             greenObject.X = randomX;
             greenObject.Y = randomY;
+            return greenObject;
         }
         private void UpdatePlayer()
         {
@@ -106,7 +130,6 @@ namespace EventsProcess
 
             player.X += player.vX;
             player.Y += player.vY;
-            
         }
         
         private void timer1_Tick(object sender, EventArgs e)

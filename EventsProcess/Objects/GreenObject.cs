@@ -9,20 +9,20 @@ namespace EventsProcess.Objects
 {
     class GreenObject : BaseObject
     {
-        public Action<GreenObject> TimeOut;
-        public int time = 100;
+        public Action<GreenObject>? TimeOut;
+        public int time = 200;
         public GreenObject(float x, float y, float angle) : base(x, y, angle)
         {
         }
+
         public override void Render(Graphics g)
         {
             g.FillEllipse(new SolidBrush(Color.DarkSeaGreen), -10, -10, 20, 20);
 
             g.DrawString(
-            $"{UpdateTime()}",
+            $"{time}",
              new Font("Verdana", 10),
-             new SolidBrush(Color.Green),
-             10, 10
+             new SolidBrush(Color.Green), 10, 10
              );
         }
 
@@ -33,17 +33,11 @@ namespace EventsProcess.Objects
             return path;
         }
 
-        public int UpdateTime()
+        public void TimeOver()
         {
-            time -= 1;
-            return time;
-        }
-
-        public override void Overlap(BaseObject obj)
-        {
-            if (obj is GreenObject)
+            if (time <= 0)
             {
-                TimeOut(obj as GreenObject);
+                TimeOut?.Invoke(this);
             }
         }
     }
